@@ -19,7 +19,9 @@ class World(ABC):
     
     @abstractmethod
     def render(self, renderer: 'Renderer', time: float, resolution: tuple,
-               mouse: tuple, palette_a: np.ndarray, palette_b: np.ndarray) -> None:
+               mouse: tuple, palette_a: np.ndarray, palette_b: np.ndarray,
+               camera_pos: np.ndarray = None, camera_dir: np.ndarray = None,
+               event_intensity: float = 0.0) -> None:
         """Render the world."""
         pass
     
@@ -64,7 +66,9 @@ class FractalWorld(World):
         self.morph = 0.5 + 0.5 * np.sin(time * 0.3)
     
     def render(self, renderer: 'Renderer', time: float, resolution: tuple,
-               mouse: tuple, palette_a: np.ndarray, palette_b: np.ndarray) -> None:
+               mouse: tuple, palette_a: np.ndarray, palette_b: np.ndarray,
+               camera_pos: np.ndarray = None, camera_dir: np.ndarray = None,
+               event_intensity: float = 0.0) -> None:
         renderer.render_fractal(
             time=time,
             resolution=resolution,
@@ -104,7 +108,9 @@ class TunnelWorld(World):
         self.speed = 0.2 + 0.1 * np.sin(time * 0.3)
     
     def render(self, renderer: 'Renderer', time: float, resolution: tuple,
-               mouse: tuple, palette_a: np.ndarray, palette_b: np.ndarray) -> None:
+               mouse: tuple, palette_a: np.ndarray, palette_b: np.ndarray,
+               camera_pos: np.ndarray = None, camera_dir: np.ndarray = None,
+               event_intensity: float = 0.0) -> None:
         renderer.render_tunnel(
             time=time,
             resolution=resolution,
@@ -122,7 +128,7 @@ class TunnelWorld(World):
 
 
 class SDFWorld(World):
-    """Signed distance field world with strange forms."""
+    """Signed distance field world with strange forms (Phonk/Neon style)."""
     
     name = "sdf"
     
@@ -134,13 +140,24 @@ class SDFWorld(World):
         self.rotation_speed = 0.1 + 0.05 * np.sin(time * 0.2)
     
     def render(self, renderer: 'Renderer', time: float, resolution: tuple,
-               mouse: tuple, palette_a: np.ndarray, palette_b: np.ndarray) -> None:
+               mouse: tuple, palette_a: np.ndarray, palette_b: np.ndarray,
+               camera_pos: np.ndarray = None, camera_dir: np.ndarray = None,
+               event_intensity: float = 0.0) -> None:
+        if camera_pos is None:
+            camera_pos = np.array([0.0, 1.0, -5.0], dtype=np.float32)
+        if camera_dir is None:
+            camera_dir = np.array([0.0, 0.0, 1.0], dtype=np.float32)
+            
         renderer.render_sdf(
             time=time,
             resolution=resolution,
+            mouse=mouse,
+            camera_pos=camera_pos,
+            camera_dir=camera_dir,
             palette_a=palette_a,
             palette_b=palette_b,
-            seed=self.seed
+            seed=self.seed,
+            event_intensity=event_intensity
         )
     
     def randomize(self, seed: float = None) -> None:

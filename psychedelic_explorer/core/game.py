@@ -314,13 +314,25 @@ class Game:
         
         # Render world
         if self.current_world:
+            # Get camera info for SDF world
+            camera_pos = self.player.position.astype(np.float32)
+            camera_dir = self.player.get_forward_vector().astype(np.float32)
+            
+            # Get event intensity for visual effects
+            event_intensity = 0.0
+            if self.active_event:
+                event_intensity = min(1.0, self.active_event.timer / 3.0)  # Peak at start
+            
             self.current_world.render(
                 self.renderer, 
                 self.total_time, 
                 resolution, 
                 mouse,
                 self.palette_a, 
-                self.palette_b
+                self.palette_b,
+                camera_pos=camera_pos,
+                camera_dir=camera_dir,
+                event_intensity=event_intensity
             )
         
         # Get render texture and apply post-processing
