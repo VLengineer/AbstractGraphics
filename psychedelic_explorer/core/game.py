@@ -320,8 +320,8 @@ class Game:
             
             # Get event intensity for visual effects
             event_intensity = 0.0
-            if self.active_event:
-                event_intensity = min(1.0, self.active_event.timer / 3.0)  # Peak at start
+            if self.event_system.active_event:
+                event_intensity = min(1.0, self.event_system.active_event.timer / 3.0)  # Peak at start
             
             self.current_world.render(
                 self.renderer, 
