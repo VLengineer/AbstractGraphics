@@ -58,13 +58,16 @@ class Renderer:
                 if isinstance(value, np.ndarray):
                     if value.ndim == 1:
                         if len(value) == 2:
-                            program[uniform_name].value = tuple(value.astype('f4'))
+                            program[uniform_name].value = tuple(float(v) for v in value.astype('f4'))
                         elif len(value) == 3:
-                            program[uniform_name].value = tuple(value.astype('f4'))
+                            program[uniform_name].value = tuple(float(v) for v in value.astype('f4'))
                         elif len(value) == 4:
-                            program[uniform_name].value = tuple(value.astype('f4'))
+                            program[uniform_name].value = tuple(float(v) for v in value.astype('f4'))
                     else:
                         program[uniform_name].value = value.tolist()
+                elif isinstance(value, (tuple, list)):
+                    # Handle tuples/lists directly (e.g., mouse position, resolution)
+                    program[uniform_name].value = tuple(float(v) for v in value)
                 else:
                     program[uniform_name].value = float(value)
     
