@@ -5,6 +5,16 @@
 ## 🚀 Установка
 
 ```bash
+# Перейдите в директорию проекта
+cd psychedelic_explorer
+
+# Установите зависимости
+pip install -r requirements.txt
+```
+
+Или вручную:
+
+```bash
 pip install pygame moderngl numpy
 ```
 
