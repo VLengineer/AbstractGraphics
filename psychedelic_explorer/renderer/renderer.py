@@ -112,10 +112,11 @@ class Renderer:
         
         self.quad_vao.render(moderngl.TRIANGLE_STRIP)
     
-    def render_sdf(self, time: float, resolution: tuple,
+    def render_sdf(self, time: float, resolution: tuple, mouse: tuple,
+                   camera_pos: np.ndarray, camera_dir: np.ndarray,
                    palette_a: np.ndarray, palette_b: np.ndarray,
-                   seed: float = 0.0) -> None:
-        """Render SDF world."""
+                   seed: float = 0.0, event_intensity: float = 0.0) -> None:
+        """Render SDF/Phonk world."""
         self.render_fb.use()
         self.render_fb.clear(0.0, 0.0, 0.0, 1.0)
         
@@ -123,10 +124,14 @@ class Renderer:
         self.set_uniforms(prog,
             resolution=resolution,
             time=time,
+            mouse=mouse,
+            camera_pos=camera_pos,
+            camera_dir=camera_dir,
             palette_a=palette_a,
             palette_b=palette_b,
             fade=self.fade,
-            seed=seed
+            seed=seed,
+            event_intensity=event_intensity
         )
         
         self.quad_vao.render(moderngl.TRIANGLE_STRIP)
