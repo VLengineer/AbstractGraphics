@@ -1,9 +1,6 @@
-```
 # Compiled and build artifacts
 *.pyc
 __pycache__/
-*.o
-*.obj
 
 # Dependencies
 .venv/
@@ -18,33 +15,47 @@ node_modules/
 # Environment
 .env
 .env.local
-*.env.*
+.env.*
 
 # Editors
 .vscode/
 .idea/
 
-# Build directories
-build/
-dist/
-target/
+# Coverage
+.coverage
+coverage/
+htmlcov/
 
-# Python specific
-*.pyc
-__pycache__/
+# Distribution artifacts
+dist/
+build/
+*.egg-info/
+
+# Python cache
 *.pyo
-*.pyd
 .Python
 *.so
+*.dylib
 
-# Compressed files
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-```
+# Testing
+.pytest_cache/
+.mypy_cache/
+.hypothesis/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Backup files
+*~
+\#*\#
+*.bak
+*.swp
+*.swo
+
+# Configuration files
+config/
+settings/
+
+# Original rules preserved
+*.log

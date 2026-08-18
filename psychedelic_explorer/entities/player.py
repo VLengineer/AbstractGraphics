@@ -106,3 +106,14 @@ class Player:
         self.score = 0
         self.health = 100.0
         self.is_alive = True
+    
+    def get_forward_vector(self) -> np.ndarray:
+        """Calculate the forward direction vector based on yaw and pitch.
+        
+        Returns:
+            3D unit vector pointing in the direction the player is looking
+        """
+        x = np.cos(self.pitch) * np.sin(self.yaw)
+        y = np.sin(self.pitch)
+        z = np.cos(self.pitch) * np.cos(self.yaw)
+        return np.array([x, y, z], dtype=np.float32)
