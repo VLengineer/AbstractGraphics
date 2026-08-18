@@ -41,52 +41,42 @@ class Player:
         
         Args:
             dt: Delta time in seconds
-            input_state: Dict with keys: mouse_delta, keys_pressed
+            input_state: Dict with keys: move, look, action, boost
             gravity_flipped: If True, invert vertical movement
         """
         if not self.is_alive:
             return
             
-        # Mouse look
-        mouse_delta = input_state.get('mouse_delta', (0, 0))
-        self.yaw -= mouse_delta[0] * self.look_sensitivity
-        self.pitch -= mouse_delta[1] * self.look_sensitivity
+        # Mouse look from 'look' vector
+        look = input_state.get('look', np.array([0.0, 0.0], dtype=np.float32))
+        self.yaw += look[0]
+        self.pitch += look[1]
         self.pitch = np.clip(self.pitch, -np.pi/2 + 0.1, np.pi/2 - 0.1)
         
-        # Keyboard movement
-        keys = input_state.get('keys_pressed', set())
-        move_dir = np.zeros(3, dtype=np.float32)
+        # Keyboard movement from 'move' vector
+        move = input_state.get('move', np.array([0.0, 0.0, 0.0], dtype=np.float32))
+        move_dir = move.copy()
         
-        # Forward/back (auto-forward always active)
-        move_dir[2] = -1.0  # Always moving forward
-        
-        if 'W' in keys:
-            move_dir[2] -= 1.0
-        if 'S' in keys:
-            move_dir[2] += 1.0
-        if 'A' in keys:
-            move_dir[0] -= 1.0
-        if 'D' in keys:
-            move_dir[1] += 1.0
-            
-        # Normalize horizontal movement
-        if move_dir[0] != 0 or move_dir[1] != 0:
-            length = np.sqrt(move_dir[0]**2 + move_dir[1]**2)
-            move_dir[0] /= length
-            move_dir[1] /= length
+        # Always moving forward automatically
+        move_dir[2] -= 1.0
         
         # Apply gravity flip if active
         if gravity_flipped:
             move_dir[1] *= -1
         
-        speed = self.move_speed * (2.0 if 'SHIFT' in keys else 1.0)
-        self.velocity = move_dir * speed
+        # Boost speed
+        speed_multiplier = 2.0 if input_state.get('boost', False) else 1.0
+        speed = self.move_speed * speed_multiplier
         
         # Update position
-        self.position += self.velocity * dt
+        self.position += move_dir * speed * dt
         
         # Energy regeneration
         self.energy = min(self.max_energy, self.energy + self.energy_regen * dt)
+        
+        # Handle dash/action
+        if input_state.get('action', False):
+            self.dash()
     
     def dash(self) -> bool:
         """Perform a dash/flash action. Returns True if successful."""
